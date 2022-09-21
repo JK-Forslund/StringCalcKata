@@ -39,5 +39,14 @@ namespace StringCalculatorKata
 
             Assert.Equal(expected, result);
         }
+
+        [Theory]
+        [InlineData(3, "//;\n1;2")]
+        public void ReturnNumberGivenCustomDelimiter(int expected, string input)
+        {
+            int result = Calculator.Add(input);
+
+            Assert.Equal(expected, result);
+        }
     }
 }
