@@ -48,5 +48,17 @@ namespace StringCalculatorKata
 
             Assert.Equal(expected, result);
         }
+
+        [Fact]
+        public void ThrowExceptionGivenNegativeNumbers()
+        {
+            void TestCode() => Calculator.Add("-1,-4,7");
+            var exception = Assert.Throws
+                <NegativesNotAllowedException>((Action)TestCode);
+
+            Assert.Contains("-1", exception.Message);
+            Assert.Contains("-4", exception.Message);
+            Assert.DoesNotContain("7", exception.Message);
+        }
     }
 }

@@ -13,15 +13,25 @@ namespace StringCalculatorKata
             char[] delimiters = GetDelimiters(numbers);
             string [] strings = numbers.Split(delimiters);
             int sum = 0;
+            List<int> numberList = new List<int>();
             foreach (var s in strings)
             {
                 if (int.TryParse(s, out int number))
                 {
-                    sum += number;
+                    numberList.Add(number);
                 }
             }
-            
-            return sum;
+            CheckForNegativeNumbers(numberList);
+            return numberList.Sum();
+        }
+
+        private static void CheckForNegativeNumbers(List<int> numberList)
+        {
+            var negativeNumbers = numberList.Where(x => x < 0).ToList();
+            if (negativeNumbers.Count > 0)
+            {
+                throw new NegativesNotAllowedException(negativeNumbers);
+            }
         }
 
         private static char[] GetDelimiters(string numbers)
