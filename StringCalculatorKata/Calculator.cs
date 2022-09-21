@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace StringCalculatorKata
@@ -10,53 +12,80 @@ namespace StringCalculatorKata
     {
         internal static int Add(string numbers)
         {
-            string[] delimiters = GetDelimiters(numbers);
-            string [] strings = numbers.Split(delimiters, StringSplitOptions.None);
-            int sum = 0;
-            List<int> numberList = new List<int>();
-            foreach (var s in strings)
-            {
-                if (int.TryParse(s, out int number))
-                {
-                    numberList.Add(number);
-                }
-            }
-            CheckForNegativeNumbers(numberList);
-            numberList.RemoveAll(x => x > 1000);
-            return numberList.Sum();
-        }
+            int result;
 
-        private static void CheckForNegativeNumbers(List<int> numberList)
-        {
-            var negativeNumbers = numberList.Where(x => x < 0).ToList();
-            if (negativeNumbers.Count > 0)
+            if (string.IsNullOrEmpty(numbers))
             {
-                throw new NegativesNotAllowedException(negativeNumbers);
+                Console.WriteLine(0);
+                return 0;
             }
-        }
 
-        private static string[] GetDelimiters(string numbers)
-        {
-            var delimiters = new List<string> { ",", "\n" };
             if (numbers.StartsWith("//"))
             {
-                string customDelim = numbers
-                    .Split('\n').First().Substring(2);
-
-                if (customDelim.StartsWith('['))
-                {
-
-                    delimiters.Add(customDelim
-                        .Substring(1, customDelim.Length - 2));
-                }
-                else
-                {
-                    delimiters.Add(customDelim);
-                }
-                
-                
+                result = CalculateWithSpecifiedDelimiter(numbers);
             }
-            return delimiters.ToArray();
+            else
+            {
+                result = Calculate(numbers);
+            }
+            Console.WriteLine(result);
+            return result;
+        }
+
+        private static int CalculateWithSpecifiedDelimiter(string input)
+        {
+            var delimiter = GetDelimiter(input);
+            input = input.Substring(input.IndexOf("\n"));
+            return Calculate(input, delimiter);
+        }
+
+        private static int Calculate(string input)
+        {
+            return Calculate(input, GetDelimiter(input));
+        }
+
+        private static int Calculate(String input, string[] delimiter)
+        {
+            var values = input.Split(delimiter, StringSplitOptions.None);
+            var intValues = values.Select(x => int.Parse(x)).Where(x => x < 1001);
+
+            CheckForNegativeNumbers(intValues);
+
+
+            return intValues.Sum();
+        }
+
+        private static void CheckForNegativeNumbers(IEnumerable<int> intValues)
+        {
+            var negatives = intValues.Where(x => x < 0).ToList();
+            if (negatives.Any())
+            {
+                string negativeString = String.Join(',', negatives
+                    .Select(n => n.ToString()));
+                throw new Exception($"Negatives not allowed: {negativeString}");
+            }
+        }
+
+        private static string[] GetDelimiter(String input)
+        {
+            string[] defaultDelimiter = new string[] { ",", "\n" };
+            if (input.StartsWith("//["))
+            {
+                return GetMultipleDelimiters(input);
+            }
+            if (input.StartsWith("//"))
+            {
+                return new string[] { input[2].ToString() };
+            }
+
+            return defaultDelimiter;
+        }
+
+        public static string[] GetMultipleDelimiters(String input)
+        {
+            input = input.TrimStart("/[".ToCharArray());
+            input = input.Split(new[] { "]\n" }, StringSplitOptions.None).First();
+            return input.Split(new[] { "][" }, StringSplitOptions.None);
         }
     }
 }
