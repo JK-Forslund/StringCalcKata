@@ -70,9 +70,8 @@ namespace StringCalculatorKata
             Assert.Equal(expected, result);
         }
         [Theory]
-        [InlineData(5, "5, 1001")]
-        [InlineData(4, "1001, 4")]
-        public void IgnoreNumbersGivenNumbersAbove1000(int expected, string input)
+        [InlineData(6, "//[***]\n1***2***3")]
+        public void AllowMulticharacterDelimiters(int expected, string input)
         {
             int result = Calculator.Add(input);
 

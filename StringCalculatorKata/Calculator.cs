@@ -10,8 +10,8 @@ namespace StringCalculatorKata
     {
         internal static int Add(string numbers)
         {
-            char[] delimiters = GetDelimiters(numbers);
-            string [] strings = numbers.Split(delimiters);
+            string[] delimiters = GetDelimiters(numbers);
+            string [] strings = numbers.Split(delimiters, StringSplitOptions.None);
             int sum = 0;
             List<int> numberList = new List<int>();
             foreach (var s in strings)
@@ -35,14 +35,26 @@ namespace StringCalculatorKata
             }
         }
 
-        private static char[] GetDelimiters(string numbers)
+        private static string[] GetDelimiters(string numbers)
         {
-            var delimiters = new List<char> { ',', '\n' };
+            var delimiters = new List<string> { ",", "\n" };
             if (numbers.StartsWith("//"))
             {
-                string delimiterDeclaration = numbers.Split('\n').First();
-                char delimiter = delimiterDeclaration.Substring(2,1).Single();
-                delimiters.Add(delimiter);
+                string customDelim = numbers
+                    .Split('\n').First().Substring(2);
+
+                if (customDelim.StartsWith('['))
+                {
+
+                    delimiters.Add(customDelim
+                        .Substring(1, customDelim.Length - 2));
+                }
+                else
+                {
+                    delimiters.Add(customDelim);
+                }
+                
+                
             }
             return delimiters.ToArray();
         }
