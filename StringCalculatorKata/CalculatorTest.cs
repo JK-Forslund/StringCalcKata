@@ -60,5 +60,23 @@ namespace StringCalculatorKata
             Assert.Contains("-4", exception.Message);
             Assert.DoesNotContain("7", exception.Message);
         }
+        [Theory]
+        [InlineData(5, "5, 1001")]
+        [InlineData(4, "1001, 4")]
+        public void IgnoreNumbersGivenNumbersAbove1000(int expected, string input)
+        {
+            int result = Calculator.Add(input);
+
+            Assert.Equal(expected, result);
+        }
+        [Theory]
+        [InlineData(5, "5, 1001")]
+        [InlineData(4, "1001, 4")]
+        public void IgnoreNumbersGivenNumbersAbove1000(int expected, string input)
+        {
+            int result = Calculator.Add(input);
+
+            Assert.Equal(expected, result);
+        }
     }
 }

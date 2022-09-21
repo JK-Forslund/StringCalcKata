@@ -22,6 +22,7 @@ namespace StringCalculatorKata
                 }
             }
             CheckForNegativeNumbers(numberList);
+            numberList.RemoveAll(x => x > 1000);
             return numberList.Sum();
         }
 
