@@ -10,7 +10,7 @@ namespace StringCalculatorKata
     {
         internal static int Add(string numbers)
         {
-            string [] strings = numbers.Split(",");
+            string [] strings = numbers.Split(',', '\n');
             int sum = 0;
             foreach (var s in strings)
             {

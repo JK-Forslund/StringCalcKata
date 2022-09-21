@@ -29,5 +29,15 @@ namespace StringCalculatorKata
 
             Assert.Equal(expected, result);
         }
+
+        [Theory]
+        [InlineData(10, "1\n2,3,4")]
+        [InlineData(10, "1\n2\n3\n4")]
+        public void ReturnNumberGivenNewLineSeparators(int expected, string input)
+        {
+            int result = Calculator.Add(input);
+
+            Assert.Equal(expected, result);
+        }
     }
 }
